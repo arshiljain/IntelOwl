@@ -190,6 +190,10 @@ class ChangePasswordView(APIView):
         except ValidationError as e:
             return Response({"error": e.message}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Validate that the current password was provided before checking it
+        if not old_password:
+            return Response({"error": "Old password is required"}, status=status.HTTP_400_BAD_REQUEST)
+
         # Check if the old password matches the user's current password
         user = request.user
         uname = user.username
